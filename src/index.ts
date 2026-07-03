@@ -96,20 +96,27 @@ else {
     });
 }});
 
-app.post('/githook', async (req,res)=> {
- try {
+app.post('/githook', async (req, res) => {
+    try {
         console.log("🔥🔥🔥 WEBHOOK HIT 🔥🔥🔥");
-    const {repository, head_commit} = req.body;
-    const repoName = repository.full_name;
-    const message = head_commit.message;
-    const commitTime = head_commit.timestamp;
+        const { repository, head_commit } = req.body;
 
-    await saveCommit(repoName, message, commitTime);
-    res.status(200).send("Commit received");
- } catch (error) {
-    console.error("Error processing webhook:", error);
-    res.status(500).send("Internal Server Error");
- }
+        if (!head_commit) {
+            console.log("No head_commit in payload, skipping");
+            res.status(200).send("No commit to process");
+            return;
+        }
+
+        const repoName = repository.full_name;
+        const message = head_commit.message;
+        const commitTime = head_commit.timestamp;
+
+        await saveCommit(repoName, message, commitTime);
+        res.status(200).send("Commit received");
+    } catch (error) {
+        console.error("Error processing webhook:", error);
+        res.status(500).send("Internal Server Error");
+    }
 });
 
 app.get('/', (req,res)=> {
