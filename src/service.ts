@@ -1,21 +1,23 @@
-const Pool = require('./db');
+import Pool from './db';
+import {CommitRow} from './types';
 
-async function saveCommit(repo, commit_hash, message, commitTime){
+
+export async function saveCommit(repo: string, message: string, commitTime: Date): Promise<void>{
     await Pool.query(
-        'INSERT INTO commits (repo, commit_hash, message, commit_time) VALUES ($1, $2, $3, $4)',
-        [repo, commit_hash, message, commitTime]
+        'INSERT INTO commits (repo, message, commit_time) VALUES ($1, $2, $3)',
+        [repo, message, commitTime]
     );
 }
 
-async function getTodayCommits() {
-    const result = await Pool.query(
+export async function getTodayCommits(): Promise<CommitRow[]> {
+    const result = await Pool.query<CommitRow>(
         'SELECT repo,message,commit_time FROM commits WHERE commit_time >= CURRENT_DATE ORDER BY commit_time DESC'
     );
 
     return result.rows;
 }
-function buildSummary(commits) {
-    const grouped = {};
+export function buildSummary(commits: CommitRow[]): string {
+    const grouped : Record<string, string[]> = {};
 
     commits.forEach(commit => {
         if (!grouped[commit.repo]) {
@@ -40,16 +42,11 @@ function buildSummary(commits) {
     return result;
 }
 
-async function fetchDailySummary() {
+export async function fetchDailySummary(): Promise<string> {
     const result = await getTodayCommits();
     const summary = buildSummary(result);
     return summary;
 
 }
-module.exports = {
-    saveCommit,
-    getTodayCommits,
-    buildSummary,
-    fetchDailySummary
-};
+
 

@@ -1,14 +1,14 @@
-const { GoogleGenAI } = require("@google/genai");
-require('dotenv').config();
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.generateSummary = generateSummary;
+const genai_1 = require("@google/genai");
+require("dotenv/config");
 console.log(process.env.GEMINI_API_KEY);
-const ai = new GoogleGenAI({
+const ai = new genai_1.GoogleGenAI({
     apiKey: process.env.GEMINI_API_KEY,
 });
-
 async function generateSummary(commits) {
-
-
-const prompt = `You are a developer journal generator.
+    const prompt = `You are a developer journal generator.
 
 Given the following Git commits grouped by repository, write a concise engineering summary for each repository.
 
@@ -25,18 +25,13 @@ ${commits}
 Output Format:
 ## Repository Name
 Summary here.`;
-console.log(commits);
-console.log("Generating summary with Gemini API...");
+    console.log(commits);
+    console.log("Generating summary with Gemini API...");
     const response = await ai.models.generateContent({
         model: "gemini-2.5-flash",
         contents: prompt,
     });
-
     console.log(response);
-
-    return response.text;
+    return response.text ?? '';
 }
-
-module.exports = {
-    generateSummary
-};
+//# sourceMappingURL=aiservice.js.map
