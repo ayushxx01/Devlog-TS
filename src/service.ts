@@ -2,10 +2,17 @@ import Pool from './db';
 import {CommitRow} from './types';
 
 
-export async function saveCommit(repo: string, message: string, commitTime: Date): Promise<void>{
+export async function saveCommit(
+    repo: string,
+    commitHash: string,
+    message: string,
+    commitTime: Date
+): Promise<void> {
     await Pool.query(
-        'INSERT INTO commits (repo, message, commit_time) VALUES ($1, $2, $3)',
-        [repo, message, commitTime]
+        `INSERT INTO commits
+        (repo, commit_hash, message, commit_time)
+        VALUES ($1, $2, $3, $4)`,
+        [repo, commitHash, message, commitTime]
     );
 }
 

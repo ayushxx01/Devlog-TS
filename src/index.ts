@@ -110,8 +110,9 @@ app.post('/githook', async (req, res) => {
         const repoName = repository.full_name;
         const message = head_commit.message;
         const commitTime = head_commit.timestamp;
+        const commitHash = head_commit.id;
 
-        await saveCommit(repoName, message, commitTime);
+        await saveCommit(repoName, commitHash, message, commitTime);
         res.status(200).send("Commit received");
     } catch (error) {
         console.error("Error processing webhook:", error);
