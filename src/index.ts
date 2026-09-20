@@ -106,7 +106,6 @@ app.post('/githook', async (req, res) => {
             res.status(200).send("No commit to process");
             return;
         }
-
         const repoName = repository.full_name;
         const message = head_commit.message;
         const commitTime = head_commit.timestamp;
