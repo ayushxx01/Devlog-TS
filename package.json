@@ -5,8 +5,8 @@
   "main": "dist/index.js",
   "scripts": {
     "build": "tsc",
-    "dev": "nodemon index.js",
-    "start": "node index.js"
+    "dev": "ts-node src/index.ts",
+    "start": "node dist/index.ts"
   },
   "keywords": [],
   "author": "Ayush Sharma",

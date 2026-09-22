@@ -4,7 +4,7 @@ import {generateSummary} from './services/aiservice';
 import { Client, GatewayIntentBits,   ActionRowBuilder,
   ButtonBuilder,
   ButtonStyle, TextChannel} from 'discord.js';
-import cron from 'node-cron';
+import {schedule} from 'node-cron';
 import  express  from 'express';
 import cors from 'cors';
 import pool from './db';
@@ -24,8 +24,10 @@ client.once("ready", async() => {
     console.log(`logged in as ${client.user.tag}`);
 });
 
-cron.schedule('00 18 * * * ', async()=> {
-    console.log("Time to fetch today's summaries");
+schedule('00 18 * * *', async()=> {
+    
+    try {
+        console.log("Time to fetch today's summaries");
     console.log("Fetching today's commits from the database...");
 
     const summaries = await fetchDailySummary();
@@ -59,9 +61,11 @@ cron.schedule('00 18 * * * ', async()=> {
         components: [row]
     });
     }
-    
-    
-})
+    } catch (erros){
+        console.error("Error fetching or sending summaries:", erros);
+    }
+   
+});
 
 client.on('interactionCreate', async(interaction)=> {
 
