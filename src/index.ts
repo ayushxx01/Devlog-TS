@@ -80,18 +80,24 @@ client.on('interactionCreate', async(interaction)=> {
     );
         console.log(`Button Clicked: ${interaction.customId}`);
 
-     if(interaction.customId === 'approve') {
-
+if(interaction.customId === 'approve') {
+    try {
         await pool.query(
             'INSERT INTO summaries (summary) VALUES ($1)',
             [summary]
         )
-    
         await interaction.update({
             content: "✅ Summary approved and saved to the database!",
             components: []
         })
+    } catch (error) {
+        console.error("Failed to save summary:", error);
+        await interaction.update({
+            content: "❌ Failed to save summary.",
+            components: []
+        })
     }
+}
 else {
   
     await interaction.update({
